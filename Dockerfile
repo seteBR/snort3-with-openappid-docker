@@ -1,12 +1,12 @@
 FROM centos:7
 MAINTAINER Julian Wang <traceflight@outlook.com>
 
-ENV DAQ_VERSION 2.2.2
-ENV SNORT_VERSION 3.0.0
-ENV SNORT_EXTRA_VERSION 1.0.0
-ENV OPENAPPID_VERSION 9552
+ENV DAQ_VERSION 3.0.14
+ENV SNORT_VERSION 3.1.78.0
+ENV SNORT_EXTRA_VERSION 3.1.78.0
+ENV OPENAPPID_VERSION 33380
 ENV CMAKE_VERSION 3.12
-ENV PCRE_VERSION 8.41
+ENV PCRE_VERSION 10.43-RC1
 ENV HYPERSCAN_VERSION 5.0.0
 
 ENV PKG_CONFIG /usr/bin/pkg-config
@@ -43,8 +43,9 @@ RUN mkdir -p /home/snort/apps && \
 # install pcre
 RUN mkdir -p /home/snort/apps && \
     cd /home/snort/apps && \
-    wget https://ftp.pcre.org/pub/pcre/pcre-${PCRE_VERSION}.tar.gz && \
-    tar xf pcre-${PCRE_VERSION}.tar.gz && cd pcre-${PCRE_VERSION} && \
+    #wget https://ftp.pcre.org/pub/pcre/pcre-${PCRE_VERSION}.tar.gz && \
+    wget https://github.com/PCRE2Project/pcre2/releases/download/pcre2-${PCRE_VERSION}/pcre2-${PCRE_VERSION}.tar.gz - O pcre2-${PCRE_VERSION}.tar.gz && \
+    tar xf pcre2-${PCRE_VERSION}.tar.gz && cd pcre2-${PCRE_VERSION} && \
     ./configure --libdir=/usr/lib64 --includedir=/usr/include && \
     make && \
     make install && \
@@ -96,9 +97,9 @@ RUN mkdir -p /home/snort/apps && \
 # install daq
 RUN mkdir -p /home/snort/apps && \
     cd /home/snort/apps && \
-    wget https://www.snort.org/downloads/snortplus/daq-${DAQ_VERSION}.tar.gz -O daq-${DAQ_VERSION}.tar.gz && \
-    tar xf daq-${DAQ_VERSION}.tar.gz && \
-    cd daq-${DAQ_VERSION} && \
+    wget https://www.snort.org/downloads/snortplus/libdaq-${DAQ_VERSION}.tar.gz -O libdaq-${DAQ_VERSION}.tar.gz && \
+    tar xf libdaq-${DAQ_VERSION}.tar.gz && \
+    cd libdaq-${DAQ_VERSION} && \
     ./configure && \
     make && \
     make install && \
@@ -108,8 +109,10 @@ RUN mkdir -p /home/snort/apps && \
 # install snort3
 RUN mkdir -p /home/snort/apps && \
     cd /home/snort/apps && \
-    git clone https://github.com/snort3/snort3.git && \
-    cd snort3/ && \
+    #git clone https://github.com/snort3/snort3.git && \
+    wget https://www.snort.org/downloads/snortplus/snort3-${SNORT_VERSION}.tar.gz -O snort3-${SNORT_VERSION}.tar.gz && \
+    tar xf snort3-${SNORT_VERSION}.tar.gz && \
+    cd snort3-${SNORT_VERSION}/ && \
     ./configure_cmake.sh --prefix=/usr/local --enable-tcmalloc --enable-large-pcap && \
     cd build/ && \
     make && \
@@ -119,8 +122,10 @@ RUN mkdir -p /home/snort/apps && \
 # install snort_extra
 RUN mkdir -p /home/snort/apps && \
     cd /home/snort/apps && \
-    git clone https://github.com/snort3/snort3_extra.git && \
-    cd snort3_extra && \
+    #git clone https://github.com/snort3/snort3_extra.git && \
+    wget https://www.snort.org/downloads/snortplus/snort3_extra-${SNORT_EXTRA_VERSION}.tar.gz -O snort3_extra-${SNORT_EXTRA_VERSION}.tar.gz && \
+    tar xf snort3_extra-${SNORT_EXTRA_VERSION}.tar.gz && \
+    cd snort3_extra-${SNORT_EXTRA_VERSION} && \
     ./configure_cmake.sh --prefix=/usr/local && \
     cd build/ && \
     make && \
